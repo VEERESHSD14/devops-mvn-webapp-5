@@ -36,6 +36,6 @@
       command: docker ps -a
       register: container_status
 
-    - name: Show container status
+    - name: Show container status 
       debug:
         var: container_status.stdout
