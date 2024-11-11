@@ -2,10 +2,11 @@
 - name: Setup Docker and run container on Ansible worker (Amazon Linux 2)
   hosts: dev
   become: yes
+  connection: ssh
   tasks:
 
     - name: Install Docker
-      amazon.aws.aws_ec2:
+      yum:
         name: docker
         state: present
 
