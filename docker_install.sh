@@ -1,3 +1,4 @@
+#!/bin/bash
 sudo yum update -y
 sudo yum search docker
 sudo yum info docker
