@@ -11,7 +11,7 @@
         dest: /tmp/docker_install.sh
         mode: '0755'
 
-   - name: Execute the Docker installation script
+    - name: Execute the Docker installation script
       command: /tmp/docker_install.sh
 
     - name: Install Docker
