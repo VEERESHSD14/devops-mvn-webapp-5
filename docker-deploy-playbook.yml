@@ -2,25 +2,22 @@
 - name: Setup Docker and run container on Ansible worker (Amazon Linux 2)
   hosts: dev
   become: yes
+  user: ansible
   connection: ssh
   tasks:
+    - name: Copy the Docker installation script to worker
+      copy:
+        src: ./docker_install.sh  # Path to your script on the Ansible master
+        dest: /tmp/docker_install.sh
+        mode: '0755'
+
+   - name: Execute the Docker installation script
+      command: /tmp/docker_install.sh
 
     - name: Install Docker
       yum:
         name: docker
         state: present
-
-    - name: Start Docker service
-      service:
-        name: docker
-        state: started
-        enabled: true
-
-    - name: Add ansible to docker group
-      user:
-        name: ansible
-        groups: docker
-        append: yes
 
     - name: Stop existing container if present
       docker_container:
@@ -54,3 +51,12 @@
         state: started
         ports:
           - "8080:8080"
+          
+    - name: Check container status
+      docker_container_info:
+        name: webapp
+      register: container_info
+
+    - name: Show container status
+      debug:
+        var: container_info
