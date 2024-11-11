@@ -14,49 +14,28 @@
     - name: Execute the Docker installation script
       command: /tmp/docker_install.sh
 
-    - name: Install Docker
-      yum:
-        name: docker
-        state: present
-
-    - name: Stop existing container if present
-      docker_container:
-        name: webapp
-        state: stopped
-        force_kill: yes
+    - name: Stop existing container if present using docker command
+      command: docker stop webapp
       ignore_errors: yes
 
-    - name: Remove existing container if present
-      docker_container:
-        name: webapp
-        state: absent
+    - name: Remove existing container if present using docker command
+      command: docker rm webapp
+      ignore_errors: yes
+    
+    - name: Remove existing image if present using docker command
+      command: docker rmi vithran21/tomcat:v1
       ignore_errors: yes
 
-    - name: Remove existing image if present
-      docker_image:
-        name: vithran21/tomcat:v1
-        source: local
-        state: absent
-      ignore_errors: yes
+    - name: Pull Docker image using docker command
+      command: docker pull vithran21/tomcat:v1
 
-    - name: Pull Docker image 
-      docker_image:
-        name: vithran21/tomcat:v1
-        source: pull
+    - name: Run Docker container using docker command
+      command: docker run -d -p 8080:8080 --name webapp vithran21/tomcat:v1
 
-    - name: Run Docker container
-      docker_container:
-        name: webapp
-        image: vithran21/tomcat:v1
-        state: started
-        ports:
-          - "8080:8080"
-          
-    - name: Check container status
-      docker_container_info:
-        name: webapp
-      register: container_info
+    - name: Check Docker container status using docker command
+      command: docker ps -a
+      register: container_status
 
     - name: Show container status
       debug:
-        var: container_info
+        var: container_status.stdout
