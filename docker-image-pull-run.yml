@@ -1,0 +1,28 @@
+---
+- name: Setup Docker and run container on Ansible worker (Amazon Linux 2)
+  hosts: dev
+  become: yes
+  user: ansible
+  connection: ssh
+  tasks:
+    - name: Remove existing container if present using docker command
+      command: docker rm -f webapp
+      ignore_errors: yes
+    
+    - name: Remove existing image if present using docker command
+      command: docker rmi vithran21/tomcat:v1
+      ignore_errors: yes
+
+    - name: Pull Docker image using docker command
+      command: docker pull vithran21/tomcat:v1
+
+    - name: Run Docker container using docker command
+      command: docker run -d -p 8080:8080 --name webapp vithran21/tomcat:v1
+
+    - name: Check Docker container status using docker command
+      command: docker ps -a
+      register: container_status
+
+    - name: Show container status 
+      debug:
+        var: container_status.stdout
